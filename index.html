@@ -48,9 +48,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -61,10 +61,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-All the Magic behind &quot;docker service create&quot; COMMAND （上）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/03/23/hello-world/" class="article-date">
-  <time datetime="2017-03-23T04:04:12.000Z" itemprop="datePublished">2017-03-23</time>
+    <a href="/2017/04/10/All the Magic behind "docker service create" COMMAND （上）/" class="article-date">
+  <time datetime="2017-04-09T16:00:00.000Z" itemprop="datePublished">2017-04-10</time>
 </a>
     
   </div>
@@ -75,7 +75,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/23/hello-world/">Hello World</a>
+      <a class="article-title" href="/2017/04/10/All the Magic behind "docker service create" COMMAND （上）/">All the Magic behind &quot;docker service create&quot; COMMAND (上)</a>
     </h1>
   
 
@@ -83,22 +83,158 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p>作者 Evelyn</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>作为使用者，对一门新技术的认识一般是从命令行开始的，了解 Docker 同样如此。从命令行的角度，docker run 、docker-compose 和 docker service 命令往往是学习 Docker 的必经之路，关于它们的学习曲线如下图所示：</p>
+<p><img src="http://i4.buimg.com/567571/dbb2e0396db92d9f.png" alt=""></p>
+<p><code>docker run</code>命令带我们走进容器的世界，那是一个小而自治的微观世界；docker-compose 命令让我们领略编排的魅力，一声令下便能指挥容器的千军万马；docker service 命令向我们展示集群的智慧，容器可以迅速形成有组织有纪律的大集体。</p>
+<p>Docker CLI 使用户能够与后台进行快速、方便地交互，而不用深究其背后的机理。因此 Docker 通常给人举重若轻的感觉，一个新 feature 即使有再复杂的逻辑，在用户看来也只不过是又多添了一条命令罢了。就如 docker service creat 命令，它可以魔法般的在 swarm 集群上迅速创建一个可以复制，分布式和负载均衡的服务。</p>
+<p><strong>How Wonderful !!!</strong></p>
+<p>自 docker service create 命令起，docker 容器便走上了跨主机甚至跨云服务的道路。swarm 集群赋予容器新的生命和活力，service 则是承接容器生命的载体。难怪 docker 要说 service 是 swarm 集群的中心结构，也是用户与集群交互的主要根源。</p>
+<p>小白曾经有过定制 docker 的经历（<a href="http://blog.daocloud.io/dockerby-evelyn/），探索了" target="_blank" rel="external">http://blog.daocloud.io/dockerby-evelyn/），探索了</a> docker 创建 volume 的过程。这次，小白决定挑战 swarm，揭秘 docker 创建 service 的所有 <strong>Magic</strong>。</p>
+<h2 id="解密-docker-service-create"><a href="#解密-docker-service-create" class="headerlink" title="解密 docker service create"></a>解密 docker service create</h2><p>应用程序往往都有接口，docker 也不例外。docker CLI 发送的所有请求均由相应的 API 接收，并交给下一级模块处理。顺着 docker 源代码的 API 模块，我找到处理 swarm 集群请求的组件。 </p>
+<p>swarm 组件下，initRoutes() 函数使用 HTTP 方法（GET/POST/DELETE）初始化路由，其中  services/create 是路由路径，sr.createService 是 handler，创建 service 的请求将由这个 handler 处理。</p>
+<p><img src="http://i1.piimg.com/567571/cca605aa7fc36d06.png" alt=""></p>
+<p>Handler 调用 docker daemon 端的 CreatService() 方法做进一步处理。</p>
+<center><img src="http://i2.buimg.com/567571/ac1422cfaaf0c9ab.png" alt=""></center>
+
+<p>与 Cluster 类型关联的 CreatService() 方法调用与 controlClient 类型关联的 CreateService 方法处理创建服务的请求。</p>
+<center><img src="http://i1.piimg.com/567571/64bbec1137476052.png" alt=""></center>
+
+<p>其中 controlClient 结构体的声明如下所示，位于 control.pb.go 文件。在这里，一个典型的 gRPC 框架跃然 “码”  上，gRPC 并非单枪匹马，它配合 ProtoBuf 使用。</p>
+<center><img src="http://i2.muimg.com/567571/7111d4fde0d93790.png" alt=""></center>
+
+
+<h2 id="GRPC-amp-ProtolBuf"><a href="#GRPC-amp-ProtolBuf" class="headerlink" title="GRPC &amp; ProtolBuf"></a>GRPC &amp; ProtolBuf</h2><p>gRPC 是 Google 开源的 RPC 框架和库。在 gRPC 里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容易地创建分布式应用和服务。</p>
+<p>ProtoBuf 同样是 Google 公司的技术，它是一种数据描述语言，可以将结构化数据序列化。如果您是第一次听说 ProtoBuf，那么刚才的解释可能略显晦涩，但是 JSON 您肯定不陌生，JSON 是一种数据交换语言，它有很多优点比如：人类可读、可理解，适用多种编程语言。然而相比 JSON，ProtoBuf 更加灵活，高效。二者的区别可以用下图表示：</p>
+<center><img src="http://i1.piimg.com/567571/de1ebd440eeec86d.png" alt=""></center>
+
+<p>有了 ProtoBuf，您可以按希望的方式将数据结构化，然后使用特殊的源代码轻松地对结构化数据进行写入和读取，这种方式适用各种数据流和各种语言。您甚至可以更新数据结构，而不会破坏通过 “旧” 格式编译的部署程序。因此它很适合做数据存储或 RPC 数据交换格式。</p>
+<p>gRPC 与 ProtoBuf 的典型配合使用场景是，写好 .proto 描述文件定义 RPC 接口，然后用 protoc（带 gRPC 插件）基于 .proto 模版自动生成客户端和服务端的接口代码。Docker 正是利用 gRPC + ProtoBuf 来实现对 swarmkit 组件的调用。</p>
+<h3 id="ProtolBuf"><a href="#ProtolBuf" class="headerlink" title="ProtolBuf"></a>ProtolBuf</h3><p>control.proto 描述文件中比较核心的是 message 和 service。message 代表数据结构（里面可以包括不同类型的成员变量，包括字符串、数字、数组、字典…），service 代表 RPC 接口。message 变量后面的数字是代码进行二进制编码时的提示信息，1～15表示热变量，会用较少的字节来编码。</p>
+<p>control.proto 定义了一个名为 Control 的 service，这个 RPC 服务通过参数 CreateServiceRequest 和返回类型 CreateServiceResponse 来远程调用 CreateService 方法。</p>
+<center><img src="http://i2.muimg.com/567571/6c65861b7935d5b8.png" alt=""></center>
+
+<p>使用 $ protoc -go_out=./control.proto 来生成 control.pb.go 文件。</p>
+<p>类似其他 RPC 框架，gRPC 的库在服务端提供一个 gRPC Server，客户端的库是 gRPC Stub。客户端可以发送请求，同步或异步调用服务端的接口。客户端和服务端之间的通信协议是基于 HTTP2 的 gRPC 协议。</p>
+<p>####创建服务端</p>
+<p>在 control.pb.go 文件中定义了 ControlServer 接口，它是 Control service 的服务端接口。</p>
+<p><img src="http://i1.piimg.com/567571/771447b25e07205b.png" alt=""></p>
+<p>定义好服务端接口以后，还需要实现接口中的方法 CreateService()，它将 CreateServiceResponse 返回给客户端。在这个方法中，它会检验传入的 service 参数是否规范，检查新建服务是否与现有服务存在端口冲突。最后返回一个 CreateServiceResponse。</p>
+<center><img src="http://i2.muimg.com/567571/bd2a2883807d9dbf.png" alt=""></center>
+
+<p>创建并启动一个 gRPC 服务的过程往往需要：创建监听套接字、创建服务端、注册服务、启动服务端。这些过程就不一一赘述了，在代码中均能有迹可寻。下图是一个客户端请求调用 CreateService() 的过程:</p>
+<center><img src="http://i4.buimg.com/567571/aac42c8271952397.png" alt=""></center>
+
+<p>####创建客户端</p>
+<p>客户端的 gRPC 非常简单，客户端程序访问上文创建的 Control 服务器。要连接 Control 服务器，我们需要创建一个 gRPC 频道，指定要连接的主机名和服务器端口，然后再用这个频道创建实例。</p>
+<p>相关代码如下，主要和实现了 ControlClient 接口,用户可以通过 gRPC 来直接调用这个接口。</p>
+<center><img src="http://i1.piimg.com/567571/42e327256344a0c5.png" alt=""></center>
+
+<p>这里是实现客户端接口中的方法:</p>
+<center><img src="http://i2.muimg.com/567571/521a1b94cef9dcad.png" alt=""></center>
+
+<p>用户直接调用接口方法：</p>
+<pre><code>r, err := state.controlClient.CreateService(ctx, &amp;swarmapi.CreateServiceRequest{Spec: &amp;serviceSpec})
+</code></pre><p>我们创建并填充一个 CreateServiceRequest 发送给服务，请求调用 CreateService()方法。如果 RPC 成功，会得到一个填充的 CreateServiceResponse，从中可以获得一个 service。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/03/23/hello-world/" data-id="cj0lxelfs0000ky5mslk0qug6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/04/10/All the Magic behind "docker service create" COMMAND （上）/" data-id="cj1bs7fmy00020p5mrisaf6j8" class="article-share-link">Partager</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Linux bridge 与 Docker bridge 的区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/01/Linux bridge 与 Docker bridge 的区别/" class="article-date">
+  <time datetime="2017-02-28T16:00:00.000Z" itemprop="datePublished">2017-03-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/01/Linux bridge 与 Docker bridge 的区别/">Linux bridge 与 Docker bridge 的区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作者 Evelyn</p>
+<p>上一回合，小白折腾了 Docker 架构，铁要趁热我开始学习 Docker 容器网络。此刻的心情，是激动的，也是不安的。激动是因为终于要面对 Docker 的第一座大山 ：<big><strong>网络</strong></big>，不安是因为网络问题一直以来都是小白的软肋，那些年我们一起学过的网络知识，如今。。。</p>
+<p>硬着头皮翻开《 Docker 进阶与实战》开始 Docker 网络初探，里面讲述了 Docker 容器网络的好几种模式。其中 “bridge“ 模式成功的吸引了我的注意。bridge 模式俗称桥接模式，关于它的定义小白早就忘了，但不难理解的是 bridge 的作用，<big><strong>bridge 可以连接不同的东西</strong></big>。</p>
+<p>早期的二层网络中，bridge 可以连接不同的 LAN 网，如下图所示。当主机 1 发出一个数据包时，LAN 1 的其他主机和网桥 br0 都会收到该数据包。网桥再将数据包从入口端复制到其他端口上（本例中就是另外一个端口）。因此，LAN 2 上的主机也会接收到主机 A 发出的数据包，从而实现不同 LAN 网上所有主机的通信。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-9/84653321-file_1486642342531_12c9d.png" alt=""></center>
+
+<p>随着网络技术的发展，传统 bridge 衍生出适用不同应用场景的模式，其中最典型要属 <big><strong>Linux bridge</strong></big> 模式，它是 Linux Kernel 网络模块的一个重要组成部分，用以保障不同虚拟机之间的通信，或是虚拟机与宿主机之间的通信，如下图所示 ：</p>
+<center><img src="http://hicu.be/wp-content/uploads/2016/03/linux-bridge.png" alt=""></center>
+
+<p>依葫芦画瓢，Docker bridge 十有八九是用来连接不同容器，或是连接容器与宿主机的。</p>
+<p>带着疑问，我快速浏览了这个章节，结果是大惊从早到晚失色，书中的介绍比我预想的复杂很多，Docker bridge 模式不仅使用了 <big><strong>veth pair</strong></big> 技术，还使用了<big><strong>网络命名空间技术</strong></big>，更令我吃惊的是，Docker bridge 模式下竟然采用了<big> <strong>NAT</strong></big> 方式。Docker bridge 和 Linux bridge 二者，初看如出一辙，再看又相去甚远，还真是傻傻分不清楚。没想到我的容器网络学习计划，刚起步便遭遇了滑铁卢。</p>
+<p>没有搞清楚 Docker bridge 与 Linux bridge 的区别前，这书简直没法看了。依小白的经验，云里雾里的时候摸清楚基本概念最有效，先从 Linux bridge 模式的基本工作原理入手，再从 Docker bridge 模式下的 “黑科技” （veth pair、网络命名空间技术、NAT）入手 ，或许能找出点头绪。压抑住内心的愤懑，我翻开了《深入理解 LINUX 网络技术的内幕》，找寻这些关键字的足迹。</p>
+<h2 id="Linux-bridge-模式"><a href="#Linux-bridge-模式" class="headerlink" title="Linux bridge 模式"></a>Linux bridge 模式</h2><p>Linux bridge 模式下，Linux Kernel 会创建出一个 <big><strong>虚拟网桥</strong></big> ，用以实现 <big><strong>主机网络接口</strong></big> 与 <big><strong>虚拟网络接口</strong></big> 间的通信。从功能上来看，Linux bridge 像一台虚拟交换机，所有桥接设置的虚拟机分别连接到这个交换机的一个接口上，接口之间可以相互访问且互不干扰，这种连接方式对物理主机而言也是如此。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-10/57064083-file_1486713557294_5239.png" alt=""></center>
+
+<p>在桥接的作用下，虚拟网桥会把主机网络接口接收到的网络流量转发给虚拟网络接口，于是后者能够接收到路由器发出的 DHCP（动态主机设定协议，用于获取局域网 IP）信息及路由更新。这样的工作流程，同样适用于不同虚拟网络接口间的通信。具体的实现方式如下所示：</p>
+<p><strong>虚拟机与宿主机通信：</strong> 用户可以手动为虚拟机配置IP 地址、子网掩码，该 IP 需要和宿主机 IP 处于同一网段，这样虚拟机才能和宿主机进行通信。</p>
+<p><strong>虚拟机与外界通信：</strong> 如果虚拟机需要联网，还需为它手动配置网关，该网关也要和宿主机网关保持一致。</p>
+<p>除此之外，还有一种较为简单的方法，那就是虚拟机通过 DHCP 自动获取 IP，实现与宿主机或宿主机以外的世界通信，小白亲测有效。</p>
+<h2 id="Docker-bridge-模式"><a href="#Docker-bridge-模式" class="headerlink" title="Docker bridge 模式"></a>Docker bridge 模式</h2><p>大致清楚 Linux bridge 模式后，再来看 Docker bridge 模式，小白也有了信心。再次翻开《 Docker 进阶与实战》，仔细阅读后小白了解到在该 bridge 模式下，Docker Daemon 会创建出一个名为 docker0 的<big><strong>虚拟网桥</strong></big> ，用来连接<big><strong>宿主机</strong></big>与<big><strong>容器</strong></big>，或者连接<big><strong>不同的容器</strong></big>，书中的介绍与小白之前的假设也不谋而合。</p>
+<p>Docker 利用 veth pair [注释1]技术，在宿主机上创建了两个虚拟网络接口 veth0 和 veth1（veth pair 技术的特性可以保证无论哪一个 veth 接收到网络报文，都会无条件地传输给另一方）。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/85480116-file_1487060128409_12583.png" alt=""></center>
+
+<p><strong>容器与宿主机通信 :</strong> 在桥接模式下，Docker Daemon 将 veth0 附加到 docker0 网桥上，保证宿主机的报文有能力发往 veth0。再将 veth1 添加到 Docker 容器所属的网络命名空间[注释2]，保证宿主机的网络报文若发往 veth0 可以立即被 veth1 收到。</p>
+<p><strong>容器与外界通信 :</strong>  容器如果需要联网，则需要采用 NAT [注释2] 方式。准确的说，是 NATP (网络地址端口转换) 方式。NATP 包含两种转换方式：SNAT 和 DNAT 。</p>
+<ul>
+<li>目的 NAT (Destination NAT，DNAT): 修改数据包的目的地址。</li>
+</ul>
+<p>当宿主机以外的世界需要访问容器时，数据包的流向如下图所示：</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/6340841-file_1487059875663_11775.png" alt=""></center>
+
+<p>由于容器的 IP 与端口对外都是不可见的，所以数据包的目的地址为 <big><strong>宿主机</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 192.168.1.10:24 。</p>
+<p>数据包经过路由器发给宿主机 eth0，再经 eth0 转发给 docker0 网桥。由于存在 DNAT 规则，会将数据包的目的地址转换为 <big><strong>容器</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 172.17.0.n:24 。</p>
+<p>宿主机上的 docker0 网桥识别到容器 ip 和端口，于是将数据包发送附加到 docker0 网桥上的 veth0 接口，veth0 接口再将数据包发送给容器内部的 veth1 接口，容器接收数据包并作出响应。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/46001748-file_1487060516664_10205.png" alt=""></center>
+
+<ul>
+<li>源 NAT (Source NAT，SNAT): 修改数据包的源地址。</li>
+</ul>
+<p>当容器需要访问宿主机以外的世界时，数据包的流向为下图所示：</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/17513270-file_1487059880951_b07a.png" alt=""></center>
+
+<p>此时数据包的源地址为 <big><strong>容器</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 172.17.0.n:24，容器内部的 veth1 接口将数据包发往 veth0 接口，到达 docker0 网桥。</p>
+<p>宿主机上的 docker0 网桥发现数据包的目的地址为外界的 IP 和端口，便会将数据包转发给 eth0 ，并从 eth0 发出去。由于存在 SNAT 规则，会将数据包的源地址转换为 <big><strong>宿主机</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 192.168.1.10:24 。</p>
+<p>由于路由器可以识别到宿主机的 ip 地址，所以再将数据包转发给外界，外界接受数据包并作出响应。这时候，在外界看来，这个数据包就是从 192.168.1.10:24 上发出来的，Docker 容器对外是不可见的。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/9364178-file_1487060536255_35bc.png" alt=""></center> 
+
+<p>##小结</p>
+<p>小白的容器网络学习只是刚刚开了头，竟也能折腾出这么多玩儿意，有 veth pair，有网络命名空间， 还有 NAT 。虽说 docker bridge 模式仅仅是容器网络的冰山一角，后面的学习之路仍然且行且艰辛，但小白也掌握了一些学习经验，那就是面对错综复杂的网络模式，首先需要识其筋骨胜肉，抓住本质含义。小白就是凭着对 bridge 的理解，才展开了一系列大胆的假设，带着问题最终在书中得到求证。Disappointing, but not fatal。</p>
+<p>[注释1] veth pair是用于不同network namespace间进行通信的方式，veth pair 将一个 network namespace 数据发往另一个 network namespace 的 veth。</p>
+<p>[注释2] 网络命名空间是用于隔离网络资源（/proc/net、IP 地址、网卡、路由等）。由于一个物理的网络设备最多存放在一个网络命名空间中，所以通过 veth pair 在不同的网络命名空间中创建通道，才能达到通信的目的。</p>
+<p>[注释3] NAT 为网络地址转换（Network Address Translation）的缩写，是一种在 ip 数据包通过路由器或防火墙时重写来源 ip 地址或目的 ip 地址的技术。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/03/01/Linux bridge 与 Docker bridge 的区别/" data-id="cj1bry82v0000y55m6j2hbx7d" class="article-share-link">Partager</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
     </footer>
   </div>
   
@@ -144,7 +280,34 @@
 <center><img src="http://of9x2nzks.bkt.clouddn.com/16-12-29/48241310-file_1482993094906_781f.png" alt=""></center>
 
 <p>大致清楚 Docker 的皮毛后，才有机会领略这条鲸鱼的庐山真面目。这时候，显然没有任何捷径，我再次陷入新的恐慌。面对这种不可思议的题目，一开始我是拒绝的，但我不能怂，更不能因为无法完成作业，就为这次实习画上句点。</p>
-<p>我回忆起操作 <figure class="highlight"><figcaption><span>pull、docker run``` 的美好时光，在 CLI 发送一个特定的请求，经过后台处理后，再返回一个请求结果。回忆起 Allen 反复强调的 Docker Clien 和 Docker Daemon，Docker 这种工作模式似乎像极了客户端-服务器（Client/Server）结构。我甚至大胆的猜测，从使用者的角度来看 **Docker 就是一个简单的 C/S 架构**。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">说到 docker 与 C/S 架构，应该如下图所示：</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/16-12-29/95501257-file_1483003471791_4be3.png)&lt;/center&gt;</div><div class="line"></div><div class="line">厉害了 word 小白，对 Docker 的结构也有了初步的认识，想想还有点小激动呢。可是现实却是残酷的，我依旧不清楚 Docker 背后的大 Boss **Docker Daemon** 是如何处理请求的。</div><div class="line"></div><div class="line">带着疑问我翻开了《 Docker 源码分析》，书的开头便是极为复杂的架构图，看的小白是云里雾里。但是随后作者就对架构中的各个模块进行了拆分与讲解，其中，就有我想了解的 Docker Daemon。</div><div class="line"></div><div class="line">可惜书中的解释对小白来说同样晦涩，在我看来 Docker Daemon 更像个大管家，它即要管存储，又要管网络，管理所有 Docker 容器的大小事务。如此一说，Docker 的架构会不会是下面这样的呢？</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/17-1-9/25549974-file_1483948395565_18256.png)&lt;/center&gt;</div><div class="line"></div><div class="line"></div><div class="line">从流程上看，daemon 创建存储卷的请求可以简单拆分为如下几个步骤：</div><div class="line"></div><div class="line">1. Docker 客户端发起创建存储卷的请求</div><div class="line">2. Docker 服务端通过 API 接收到请求，并交给 Handler 处理</div><div class="line">3. Handler 将创建存储卷的请求下发给 Docker 后端相应的存储卷模块处理</div><div class="line">4. 存储卷模块负责完成存储卷的创建，最终将请求处理后结果返回至 Docker 客户端</div><div class="line"></div><div class="line">daemon 创建存储卷的流程是这样，那么创建网络，创建服务是否同样如此？我不禁开了开脑洞。</div><div class="line"></div><div class="line">回到题目 “限制每个 daemon 创建存储卷的个数”，无非是在以上某个步骤做限制。步骤 1 应该不行，这属于在 Docker 客户端处做限制，不符合题目要求。步骤 2 从 API 入手，我心里打起了小算盘，如果能限制 API 处接收请求的个数，不就可以限制 daemon 创建存储卷的个数了吗 ?? </div><div class="line"></div><div class="line">踏破铁鞋无觅处，得来费了点工夫，小白定制 Docker 看来指日可待了。</div><div class="line"></div><div class="line">我正要下手时，竟有些犹豫，如此简单的解决方法，谨防有诈。在 API 处做限制会不会出什么幺蛾子？我想起了软件设计的原则，通常强调高內聚、低耦合。既然真正处理存储卷请求的地方是在存储卷模块，那么在 API 处做限制就违背了高內聚的原则。看来从步骤 4 中的存储卷模块下手才是上乘之举。</div><div class="line"></div><div class="line">***</div><div class="line">***</div><div class="line"></div><div class="line">**整理好思路，等待小白的将是浩浩荡荡几十万行的 Docker 源码。**</div><div class="line"></div><div class="line">## 开启 Docker 源码之旅</div><div class="line"></div><div class="line">开启 Docker 源码之旅前，需要下载 Docker 源码到本地 </div><div class="line"></div><div class="line">	git clone https://github.com/docker/docker.git</div><div class="line"></div><div class="line">Docker 源码中包含了所有我见过的，以及我没见过的内容。结合作业题目，我的初步目标就是找到和 volume 相关的东西。我记忆中 **volume 就是可以让容器共享宿主机文件、目录的存储卷** 。［敲重点］</div><div class="line">	</div><div class="line">### 存储卷创建流程</div><div class="line"></div><div class="line">存储卷是如何创建的？小白习惯先在 CLI 上玩儿起来。连续三个 help 找到创建存储卷的命令行语句。</div></pre></td></tr></table></figure></p>
+<p>我回忆起操作 docker pull、docker run 的美好时光，在 CLI 发送一个特定的请求，经过后台处理后，再返回一个请求结果。回忆起 Allen 反复强调的 Docker Clien 和 Docker Daemon，Docker 这种工作模式似乎像极了客户端-服务器（Client/Server）结构。我甚至大胆的猜测，从使用者的角度来看 <strong>Docker 就是一个简单的 C/S 架构</strong>。</p>
+<p>说到 docker 与 C/S 架构，应该如下图所示：</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/16-12-29/95501257-file_1483003471791_4be3.png" alt=""></center>
+
+<p>厉害了 word 小白，对 Docker 的结构也有了初步的认识，想想还有点小激动呢。可是现实却是残酷的，我依旧不清楚 Docker 背后的大 Boss <strong>Docker Daemon</strong> 是如何处理请求的。</p>
+<p>带着疑问我翻开了《 Docker 源码分析》，书的开头便是极为复杂的架构图，看的小白是云里雾里。但是随后作者就对架构中的各个模块进行了拆分与讲解，其中，就有我想了解的 Docker Daemon。</p>
+<p>可惜书中的解释对小白来说同样晦涩，在我看来 Docker Daemon 更像个大管家，它即要管存储，又要管网络，管理所有 Docker 容器的大小事务。如此一说，Docker 的架构会不会是下面这样的呢？</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-1-9/25549974-file_1483948395565_18256.png" alt=""></center>
+
+
+<p>从流程上看，daemon 创建存储卷的请求可以简单拆分为如下几个步骤：</p>
+<ol>
+<li>Docker 客户端发起创建存储卷的请求</li>
+<li>Docker 服务端通过 API 接收到请求，并交给 Handler 处理</li>
+<li>Handler 将创建存储卷的请求下发给 Docker 后端相应的存储卷模块处理</li>
+<li>存储卷模块负责完成存储卷的创建，最终将请求处理后结果返回至 Docker 客户端</li>
+</ol>
+<p>daemon 创建存储卷的流程是这样，那么创建网络，创建服务是否同样如此？我不禁开了开脑洞。</p>
+<p>回到题目 “限制每个 daemon 创建存储卷的个数”，无非是在以上某个步骤做限制。步骤 1 应该不行，这属于在 Docker 客户端处做限制，不符合题目要求。步骤 2 从 API 入手，我心里打起了小算盘，如果能限制 API 处接收请求的个数，不就可以限制 daemon 创建存储卷的个数了吗 ?? </p>
+<p>踏破铁鞋无觅处，得来费了点工夫，小白定制 Docker 看来指日可待了。</p>
+<p>我正要下手时，竟有些犹豫，如此简单的解决方法，谨防有诈。在 API 处做限制会不会出什么幺蛾子？我想起了软件设计的原则，通常强调高內聚、低耦合。既然真正处理存储卷请求的地方是在存储卷模块，那么在 API 处做限制就违背了高內聚的原则。看来从步骤 4 中的存储卷模块下手才是上乘之举。</p>
+<hr>
+<hr>
+<p><strong>整理好思路，等待小白的将是浩浩荡荡几十万行的 Docker 源码。</strong></p>
+<h2 id="开启-Docker-源码之旅"><a href="#开启-Docker-源码之旅" class="headerlink" title="开启 Docker 源码之旅"></a>开启 Docker 源码之旅</h2><p>开启 Docker 源码之旅前，需要下载 Docker 源码到本地 </p>
+<pre><code>git clone https://github.com/docker/docker.git
+</code></pre><p>Docker 源码中包含了所有我见过的，以及我没见过的内容。结合作业题目，我的初步目标就是找到和 volume 相关的东西。我记忆中 <strong>volume 就是可以让容器共享宿主机文件、目录的存储卷</strong> 。［敲重点］</p>
+<h3 id="存储卷创建流程"><a href="#存储卷创建流程" class="headerlink" title="存储卷创建流程"></a>存储卷创建流程</h3><p>存储卷是如何创建的？小白习惯先在 CLI 上玩儿起来。连续三个 help 找到创建存储卷的命令行语句。</p>
 <ol>
 <li><p>docker –help</p>
 </li>
@@ -153,20 +316,57 @@
 <li><p>docker volume create –help</p>
 </li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">我试着用 docker volume create 创建一个名为 foo 的 volume，并用 docker volume ls 命令查看 volume 列表，果真看到了刚才创建的 volume &quot;foo&quot;。</div><div class="line">	</div><div class="line">	docker volume create --name foo	</div><div class="line"></div><div class="line">docker volume create 这条命令，在小白这种初级玩家看来是这样，但是中间究竟发生了什么？也许只有代码才能准确的回答这个问题。在浏览了代码后我惊喜的发现，代码中描述的创建过程和我之前的猜测竟然一一吻合，创建存储卷的过程大致分为三个步骤，流程图如下所示 ：</div><div class="line">	</div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/16-12-30/30199850-file_1483064678838_c307.png)&lt;/center&gt;</div><div class="line">	</div><div class="line"></div><div class="line"></div><div class="line">#### 一、Docker API 接收来自 Docker 客户端的请求</div><div class="line"></div><div class="line">Docker API 和其他应用程序接口一样，负责衔接软件系统中不同的组成部分。Docker 的 API 通过initRoutes() 函数初始化存储卷模块的路由，注册一个路由记录，然后接收到一个 POST 请求 “/volumes/create”。postVolumesCreate() 函数收到请求后再交给 VolumesCreate() 函数处理。</div><div class="line"></div><div class="line">如果纯粹为了解题，在此处设置限制不失为一种方法，简单粗暴，也不用深究 VolumesCreate() 函数后面的故事。但是，如果大家还存在一些疑惑，还想探索后面的未知世界，那么，请允许小白带大家继续这次 Docker 源码之旅。</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/17-1-9/64498333-file_1483955024061_1461f.png)&lt;/center&gt;</div><div class="line"></div><div class="line">#### 二、Docker Daemon 接收来自 Docker API 的请求，交由存储卷模块处理</div><div class="line"></div><div class="line">API 的源码之旅告一段落，转眼来到了 Docker Daemon 的世界。小白一直很好奇，Docker Daemon 作为大管家，是如何接管多种类型的请求？在浏览代码的过程中我发现， struct &lt;font color=#32CD32 &gt; &lt;big&gt;&lt;big&gt; **Daemon** &lt;/big&gt;&lt;/big&gt; &lt;/font&gt; is all the magic behind it。Docker Daemon 核心的结构体就是 Daemon, 所有存储、网络、服务都是调用 Daemon 这个容器数据结构。如下图所示 :</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/17-1-9/57430904-file_1483968415547_dccd.png)&lt;/center&gt;</div><div class="line"></div><div class="line">其中，所有和存储卷相关的请求都以 Daemon 结构体中的 volumes 字段为入口往下延伸。VolumeCreate() 函数将调用后端存储卷模块对请求进行进最后的处理。</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/17-1-9/37945619-file_1483961836056_2dc4.png)&lt;/center&gt;</div><div class="line"></div><div class="line">#### 三、存储卷模块接收请求并进行最后的处理</div><div class="line"></div><div class="line">Docker Daemon 调用 volume 模块中的 Create() 函数，Create() 函数的接收者为 VolumeStore 结构体，返回值为 s.CreateWithRef(name, driverName, &quot;&quot;, opts, labels)</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/17-1-9/52071298-file_1483963246737_124c2.png)&lt;/center&gt;</div><div class="line"></div><div class="line">小白有些疑惑，这个 Create() 函数与 CreateWithRef() 函数是有什么关系？</div><div class="line"></div><div class="line">Create() 函数的返回值s.CreateWithRef(name, driverName, &quot;&quot;, opts, labels) 中 ref 项为空，表明创建存储卷时没有创建 reference 记录。我暂且把 reference 理解为一条连结存储卷与容器的关系纽带。</div><div class="line"></div><div class="line">CreateWithRef() 函数处理来自 Create() 函数的请求，调用  &lt;font color=#32CD32 &gt;&lt;big&gt;&lt;big&gt;**create()**&lt;/big&gt;&lt;/big&gt;&lt;/font&gt; 函数完成创建。</div><div class="line"></div><div class="line">兜兜转转，真正创建存储卷的地方竟是在 create() 函数中， 它检查名称是否合乎规范，为存储卷创建 driver...</div><div class="line"></div><div class="line">### 在存储卷模块做终极限制</div><div class="line"></div><div class="line">找到了 create() 函数意味着终于看到了希望的曙光，于是我打算在 create() 函数中做限制。浏览存储卷模块代码，发现结构体 VolumeStore 是存储卷模块的关键，所有关于 volume 的信息都被保存在这个结构体中。而 New() 函数则负责初始化 VolumeStore 结构体。</div><div class="line"></div><div class="line">&lt;center&gt;![](http://of9x2nzks.bkt.clouddn.com/17-1-9/58703875-file_1483970000575_165ad.png)&lt;/center&gt;</div><div class="line"></div><div class="line">小白限制每个 Daemon 创建的存储卷个数，定制 Docker 的具体过程如下 ：</div><div class="line"></div><div class="line">1. 在 VolumeStore 结构体中声明一个 max 变量，代表 volume 的极限值</div><div class="line"></div><div class="line">2. New() 函数中为 max 变量赋初值 5</div><div class="line"></div><div class="line">3. 在 create() 函数中添加如下代码</div></pre></td></tr></table></figure>
+<p>我试着用 docker volume create 创建一个名为 foo 的 volume，并用 docker volume ls 命令查看 volume 列表，果真看到了刚才创建的 volume “foo”。</p>
+<pre><code>docker volume create --name foo    
+</code></pre><p>docker volume create 这条命令，在小白这种初级玩家看来是这样，但是中间究竟发生了什么？也许只有代码才能准确的回答这个问题。在浏览了代码后我惊喜的发现，代码中描述的创建过程和我之前的猜测竟然一一吻合，创建存储卷的过程大致分为三个步骤，流程图如下所示 ：</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/16-12-30/30199850-file_1483064678838_c307.png" alt=""></center>
+
+
+
+<h4 id="一、Docker-API-接收来自-Docker-客户端的请求"><a href="#一、Docker-API-接收来自-Docker-客户端的请求" class="headerlink" title="一、Docker API 接收来自 Docker 客户端的请求"></a>一、Docker API 接收来自 Docker 客户端的请求</h4><p>Docker API 和其他应用程序接口一样，负责衔接软件系统中不同的组成部分。Docker 的 API 通过initRoutes() 函数初始化存储卷模块的路由，注册一个路由记录，然后接收到一个 POST 请求 “/volumes/create”。postVolumesCreate() 函数收到请求后再交给 VolumesCreate() 函数处理。</p>
+<p>如果纯粹为了解题，在此处设置限制不失为一种方法，简单粗暴，也不用深究 VolumesCreate() 函数后面的故事。但是，如果大家还存在一些疑惑，还想探索后面的未知世界，那么，请允许小白带大家继续这次 Docker 源码之旅。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-1-9/64498333-file_1483955024061_1461f.png" alt=""></center>
+
+<h4 id="二、Docker-Daemon-接收来自-Docker-API-的请求，交由存储卷模块处理"><a href="#二、Docker-Daemon-接收来自-Docker-API-的请求，交由存储卷模块处理" class="headerlink" title="二、Docker Daemon 接收来自 Docker API 的请求，交由存储卷模块处理"></a>二、Docker Daemon 接收来自 Docker API 的请求，交由存储卷模块处理</h4><p>API 的源码之旅告一段落，转眼来到了 Docker Daemon 的世界。小白一直很好奇，Docker Daemon 作为大管家，是如何接管多种类型的请求？在浏览代码的过程中我发现， struct <font color="#32CD32"> <big><big> <strong>Daemon</strong> </big></big> </font> is all the magic behind it。Docker Daemon 核心的结构体就是 Daemon, 所有存储、网络、服务都是调用 Daemon 这个容器数据结构。如下图所示 :</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-1-9/57430904-file_1483968415547_dccd.png" alt=""></center>
+
+<p>其中，所有和存储卷相关的请求都以 Daemon 结构体中的 volumes 字段为入口往下延伸。VolumeCreate() 函数将调用后端存储卷模块对请求进行进最后的处理。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-1-9/37945619-file_1483961836056_2dc4.png" alt=""></center>
+
+<h4 id="三、存储卷模块接收请求并进行最后的处理"><a href="#三、存储卷模块接收请求并进行最后的处理" class="headerlink" title="三、存储卷模块接收请求并进行最后的处理"></a>三、存储卷模块接收请求并进行最后的处理</h4><p>Docker Daemon 调用 volume 模块中的 Create() 函数，Create() 函数的接收者为 VolumeStore 结构体，返回值为 s.CreateWithRef(name, driverName, “”, opts, labels)</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-1-9/52071298-file_1483963246737_124c2.png" alt=""></center>
+
+<p>小白有些疑惑，这个 Create() 函数与 CreateWithRef() 函数是有什么关系？</p>
+<p>Create() 函数的返回值s.CreateWithRef(name, driverName, “”, opts, labels) 中 ref 项为空，表明创建存储卷时没有创建 reference 记录。我暂且把 reference 理解为一条连结存储卷与容器的关系纽带。</p>
+<p>CreateWithRef() 函数处理来自 Create() 函数的请求，调用  <font color="#32CD32"><big><big><strong>create()</strong></big></big></font> 函数完成创建。</p>
+<p>兜兜转转，真正创建存储卷的地方竟是在 create() 函数中， 它检查名称是否合乎规范，为存储卷创建 driver…</p>
+<h3 id="在存储卷模块做终极限制"><a href="#在存储卷模块做终极限制" class="headerlink" title="在存储卷模块做终极限制"></a>在存储卷模块做终极限制</h3><p>找到了 create() 函数意味着终于看到了希望的曙光，于是我打算在 create() 函数中做限制。浏览存储卷模块代码，发现结构体 VolumeStore 是存储卷模块的关键，所有关于 volume 的信息都被保存在这个结构体中。而 New() 函数则负责初始化 VolumeStore 结构体。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-1-9/58703875-file_1483970000575_165ad.png" alt=""></center>
+
+<p>小白限制每个 Daemon 创建的存储卷个数，定制 Docker 的具体过程如下 ：</p>
+<ol>
+<li><p>在 VolumeStore 结构体中声明一个 max 变量，代表 volume 的极限值</p>
+</li>
+<li><p>New() 函数中为 max 变量赋初值 5</p>
+</li>
+<li><p>在 create() 函数中添加如下代码</p>
+</li>
+</ol>
 <p>var vols  []volume.Volume    //声明一个 vols 变量</p>
 <p>vols, <em> , </em> := s.list()      //调用 list() 函数返回 vols 值</p>
 <p>number := len(vols)          //计算出当前 volume 的数目</p>
-<p>if number &lt; s.max            //最后加入判断语句<br>```</p>
+<p>if number &lt; s.max            //最后加入判断语句</p>
 <p>编译，运行，结果和我设想的一致。小白做到定制 Docker 了 ✌️✌️</p>
 <p>以上是其中一种限制方式，答案本身显得并不那么重要了。小白在解题的过程中，大致清楚了容器与 Dokcer 的定义，对 Docker 的结构也有些许的了解，同时还培养了从代码的角度看待问题的能力。一题多解，由浅入深，可浅尝辙止，也可深入探究，Allen 老师真是高深莫测。如此看来，让一个小白定制 Docker 也不是不可能。<strong>Disappointing, but not fatal</strong>。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/28/吓尿了，让一个小白定制 Docker?/" data-id="cj1bqnl5x0000gq5mmhxfgo0g" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/28/吓尿了，让一个小白定制 Docker?/" data-id="cj1bro74z0001us5mfm4wpgwj" class="article-share-link">Partager</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
     </footer>
   </div>
   
@@ -183,15 +383,10 @@
 
   
     
-
-  
-    
-  
-    
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Mot-clés</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a></li></ul>
     </div>
   </div>
 
@@ -199,12 +394,35 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/原创/" style="font-size: 10px;">原创</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2017/03/23/hello-world/">Hello World</a>
+            <a href="/2017/04/10/All the Magic behind "docker service create" COMMAND （上）/">All the Magic behind &quot;docker service create&quot; COMMAND (上)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/01/Linux bridge 与 Docker bridge 的区别/">Linux bridge 与 Docker bridge 的区别</a>
           </li>
         
           <li>
@@ -224,7 +442,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux bridge 与 Docker bridge 的区别 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="作者 Evelyn
+上一回合，小白折腾了 Docker 架构，铁要趁热我开始学习 Docker 容器网络。此刻的心情，是激动的，也是不安的。激动是因为终于要面对 Docker 的第一座大山 ：网络，不安是因为网络问题一直以来都是小白的软肋，那些年我们一起学过的网络知识，如今。。。
+硬着头皮翻开《 Docker 进阶与实战》开始 Docker 网络初探，里面讲述了 Docker 容器网络的好几种模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux bridge 与 Docker bridge 的区别">
+<meta property="og:url" content="http://yoursite.com/2017/03/01/Linux bridge 与 Docker bridge 的区别/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="作者 Evelyn
+上一回合，小白折腾了 Docker 架构，铁要趁热我开始学习 Docker 容器网络。此刻的心情，是激动的，也是不安的。激动是因为终于要面对 Docker 的第一座大山 ：网络，不安是因为网络问题一直以来都是小白的软肋，那些年我们一起学过的网络知识，如今。。。
+硬着头皮翻开《 Docker 进阶与实战》开始 Docker 网络初探，里面讲述了 Docker 容器网络的好几种模式">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-9/84653321-file_1486642342531_12c9d.png">
+<meta property="og:image" content="http://hicu.be/wp-content/uploads/2016/03/linux-bridge.png">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-10/57064083-file_1486713557294_5239.png">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-14/85480116-file_1487060128409_12583.png">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-14/6340841-file_1487059875663_11775.png">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-14/46001748-file_1487060516664_10205.png">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-14/17513270-file_1487059880951_b07a.png">
+<meta property="og:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-14/9364178-file_1487060536255_35bc.png">
+<meta property="og:updated_time" content="2017-04-10T07:08:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux bridge 与 Docker bridge 的区别">
+<meta name="twitter:description" content="作者 Evelyn
+上一回合，小白折腾了 Docker 架构，铁要趁热我开始学习 Docker 容器网络。此刻的心情，是激动的，也是不安的。激动是因为终于要面对 Docker 的第一座大山 ：网络，不安是因为网络问题一直以来都是小白的软肋，那些年我们一起学过的网络知识，如今。。。
+硬着头皮翻开《 Docker 进阶与实战》开始 Docker 网络初探，里面讲述了 Docker 容器网络的好几种模式">
+<meta name="twitter:image" content="http://of9x2nzks.bkt.clouddn.com/17-2-9/84653321-file_1486642342531_12c9d.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Linux bridge 与 Docker bridge 的区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/01/Linux bridge 与 Docker bridge 的区别/" class="article-date">
+  <time datetime="2017-02-28T16:00:00.000Z" itemprop="datePublished">2017-03-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux bridge 与 Docker bridge 的区别
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作者 Evelyn</p>
+<p>上一回合，小白折腾了 Docker 架构，铁要趁热我开始学习 Docker 容器网络。此刻的心情，是激动的，也是不安的。激动是因为终于要面对 Docker 的第一座大山 ：<big><strong>网络</strong></big>，不安是因为网络问题一直以来都是小白的软肋，那些年我们一起学过的网络知识，如今。。。</p>
+<p>硬着头皮翻开《 Docker 进阶与实战》开始 Docker 网络初探，里面讲述了 Docker 容器网络的好几种模式。其中 “bridge“ 模式成功的吸引了我的注意。bridge 模式俗称桥接模式，关于它的定义小白早就忘了，但不难理解的是 bridge 的作用，<big><strong>bridge 可以连接不同的东西</strong></big>。</p>
+<p>早期的二层网络中，bridge 可以连接不同的 LAN 网，如下图所示。当主机 1 发出一个数据包时，LAN 1 的其他主机和网桥 br0 都会收到该数据包。网桥再将数据包从入口端复制到其他端口上（本例中就是另外一个端口）。因此，LAN 2 上的主机也会接收到主机 A 发出的数据包，从而实现不同 LAN 网上所有主机的通信。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-9/84653321-file_1486642342531_12c9d.png" alt=""></center>
+
+<p>随着网络技术的发展，传统 bridge 衍生出适用不同应用场景的模式，其中最典型要属 <big><strong>Linux bridge</strong></big> 模式，它是 Linux Kernel 网络模块的一个重要组成部分，用以保障不同虚拟机之间的通信，或是虚拟机与宿主机之间的通信，如下图所示 ：</p>
+<center><img src="http://hicu.be/wp-content/uploads/2016/03/linux-bridge.png" alt=""></center>
+
+<p>依葫芦画瓢，Docker bridge 十有八九是用来连接不同容器，或是连接容器与宿主机的。</p>
+<p>带着疑问，我快速浏览了这个章节，结果是大惊从早到晚失色，书中的介绍比我预想的复杂很多，Docker bridge 模式不仅使用了 <big><strong>veth pair</strong></big> 技术，还使用了<big><strong>网络命名空间技术</strong></big>，更令我吃惊的是，Docker bridge 模式下竟然采用了<big> <strong>NAT</strong></big> 方式。Docker bridge 和 Linux bridge 二者，初看如出一辙，再看又相去甚远，还真是傻傻分不清楚。没想到我的容器网络学习计划，刚起步便遭遇了滑铁卢。</p>
+<p>没有搞清楚 Docker bridge 与 Linux bridge 的区别前，这书简直没法看了。依小白的经验，云里雾里的时候摸清楚基本概念最有效，先从 Linux bridge 模式的基本工作原理入手，再从 Docker bridge 模式下的 “黑科技” （veth pair、网络命名空间技术、NAT）入手 ，或许能找出点头绪。压抑住内心的愤懑，我翻开了《深入理解 LINUX 网络技术的内幕》，找寻这些关键字的足迹。</p>
+<h2 id="Linux-bridge-模式"><a href="#Linux-bridge-模式" class="headerlink" title="Linux bridge 模式"></a>Linux bridge 模式</h2><p>Linux bridge 模式下，Linux Kernel 会创建出一个 <big><strong>虚拟网桥</strong></big> ，用以实现 <big><strong>主机网络接口</strong></big> 与 <big><strong>虚拟网络接口</strong></big> 间的通信。从功能上来看，Linux bridge 像一台虚拟交换机，所有桥接设置的虚拟机分别连接到这个交换机的一个接口上，接口之间可以相互访问且互不干扰，这种连接方式对物理主机而言也是如此。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-10/57064083-file_1486713557294_5239.png" alt=""></center>
+
+<p>在桥接的作用下，虚拟网桥会把主机网络接口接收到的网络流量转发给虚拟网络接口，于是后者能够接收到路由器发出的 DHCP（动态主机设定协议，用于获取局域网 IP）信息及路由更新。这样的工作流程，同样适用于不同虚拟网络接口间的通信。具体的实现方式如下所示：</p>
+<p><strong>虚拟机与宿主机通信：</strong> 用户可以手动为虚拟机配置IP 地址、子网掩码，该 IP 需要和宿主机 IP 处于同一网段，这样虚拟机才能和宿主机进行通信。</p>
+<p><strong>虚拟机与外界通信：</strong> 如果虚拟机需要联网，还需为它手动配置网关，该网关也要和宿主机网关保持一致。</p>
+<p>除此之外，还有一种较为简单的方法，那就是虚拟机通过 DHCP 自动获取 IP，实现与宿主机或宿主机以外的世界通信，小白亲测有效。</p>
+<h2 id="Docker-bridge-模式"><a href="#Docker-bridge-模式" class="headerlink" title="Docker bridge 模式"></a>Docker bridge 模式</h2><p>大致清楚 Linux bridge 模式后，再来看 Docker bridge 模式，小白也有了信心。再次翻开《 Docker 进阶与实战》，仔细阅读后小白了解到在该 bridge 模式下，Docker Daemon 会创建出一个名为 docker0 的<big><strong>虚拟网桥</strong></big> ，用来连接<big><strong>宿主机</strong></big>与<big><strong>容器</strong></big>，或者连接<big><strong>不同的容器</strong></big>，书中的介绍与小白之前的假设也不谋而合。</p>
+<p>Docker 利用 veth pair [注释1]技术，在宿主机上创建了两个虚拟网络接口 veth0 和 veth1（veth pair 技术的特性可以保证无论哪一个 veth 接收到网络报文，都会无条件地传输给另一方）。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/85480116-file_1487060128409_12583.png" alt=""></center>
+
+<p><strong>容器与宿主机通信 :</strong> 在桥接模式下，Docker Daemon 将 veth0 附加到 docker0 网桥上，保证宿主机的报文有能力发往 veth0。再将 veth1 添加到 Docker 容器所属的网络命名空间[注释2]，保证宿主机的网络报文若发往 veth0 可以立即被 veth1 收到。</p>
+<p><strong>容器与外界通信 :</strong>  容器如果需要联网，则需要采用 NAT [注释2] 方式。准确的说，是 NATP (网络地址端口转换) 方式。NATP 包含两种转换方式：SNAT 和 DNAT 。</p>
+<ul>
+<li>目的 NAT (Destination NAT，DNAT): 修改数据包的目的地址。</li>
+</ul>
+<p>当宿主机以外的世界需要访问容器时，数据包的流向如下图所示：</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/6340841-file_1487059875663_11775.png" alt=""></center>
+
+<p>由于容器的 IP 与端口对外都是不可见的，所以数据包的目的地址为 <big><strong>宿主机</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 192.168.1.10:24 。</p>
+<p>数据包经过路由器发给宿主机 eth0，再经 eth0 转发给 docker0 网桥。由于存在 DNAT 规则，会将数据包的目的地址转换为 <big><strong>容器</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 172.17.0.n:24 。</p>
+<p>宿主机上的 docker0 网桥识别到容器 ip 和端口，于是将数据包发送附加到 docker0 网桥上的 veth0 接口，veth0 接口再将数据包发送给容器内部的 veth1 接口，容器接收数据包并作出响应。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/46001748-file_1487060516664_10205.png" alt=""></center>
+
+<ul>
+<li>源 NAT (Source NAT，SNAT): 修改数据包的源地址。</li>
+</ul>
+<p>当容器需要访问宿主机以外的世界时，数据包的流向为下图所示：</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/17513270-file_1487059880951_b07a.png" alt=""></center>
+
+<p>此时数据包的源地址为 <big><strong>容器</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 172.17.0.n:24，容器内部的 veth1 接口将数据包发往 veth0 接口，到达 docker0 网桥。</p>
+<p>宿主机上的 docker0 网桥发现数据包的目的地址为外界的 IP 和端口，便会将数据包转发给 eth0 ，并从 eth0 发出去。由于存在 SNAT 规则，会将数据包的源地址转换为 <big><strong>宿主机</strong></big> 的 <big><strong>ip</strong></big> 和 <big><strong>端口</strong></big>，为 192.168.1.10:24 。</p>
+<p>由于路由器可以识别到宿主机的 ip 地址，所以再将数据包转发给外界，外界接受数据包并作出响应。这时候，在外界看来，这个数据包就是从 192.168.1.10:24 上发出来的，Docker 容器对外是不可见的。</p>
+<center><img src="http://of9x2nzks.bkt.clouddn.com/17-2-14/9364178-file_1487060536255_35bc.png" alt=""></center> 
+
+<p>##小结</p>
+<p>小白的容器网络学习只是刚刚开了头，竟也能折腾出这么多玩儿意，有 veth pair，有网络命名空间， 还有 NAT 。虽说 docker bridge 模式仅仅是容器网络的冰山一角，后面的学习之路仍然且行且艰辛，但小白也掌握了一些学习经验，那就是面对错综复杂的网络模式，首先需要识其筋骨胜肉，抓住本质含义。小白就是凭着对 bridge 的理解，才展开了一系列大胆的假设，带着问题最终在书中得到求证。Disappointing, but not fatal。</p>
+<p>[注释1] veth pair是用于不同network namespace间进行通信的方式，veth pair 将一个 network namespace 数据发往另一个 network namespace 的 veth。</p>
+<p>[注释2] 网络命名空间是用于隔离网络资源（/proc/net、IP 地址、网卡、路由等）。由于一个物理的网络设备最多存放在一个网络命名空间中，所以通过 veth pair 在不同的网络命名空间中创建通道，才能达到通信的目的。</p>
+<p>[注释3] NAT 为网络地址转换（Network Address Translation）的缩写，是一种在 ip 数据包通过路由器或防火墙时重写来源 ip 地址或目的 ip 地址的技术。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/03/01/Linux bridge 与 Docker bridge 的区别/" data-id="cj1bry82v0000y55m6j2hbx7d" class="article-share-link">Partager</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/04/10/All the Magic behind "docker service create" COMMAND （上）/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          All the Magic behind &quot;docker service create&quot; COMMAND (上)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/12/28/吓尿了，让一个小白定制 Docker?/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">吓尿了，让一个小白定制 Docker ?</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Mot-clés</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/原创/" style="font-size: 10px;">原创</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/04/10/All the Magic behind "docker service create" COMMAND （上）/">All the Magic behind &quot;docker service create&quot; COMMAND (上)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/01/Linux bridge 与 Docker bridge 的区别/">Linux bridge 与 Docker bridge 的区别</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/28/吓尿了，让一个小白定制 Docker?/">吓尿了，让一个小白定制 Docker ?</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
